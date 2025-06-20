@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin
+Disallow: /api
+Disallow: /auth
+
+# Temporarily block all crawlers for stealth mode
+User-agent: *
+Disallow: /
