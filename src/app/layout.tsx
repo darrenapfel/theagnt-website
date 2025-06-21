@@ -34,6 +34,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        {/* Preconnect to OAuth providers for faster authentication */}
+        <link rel="preconnect" href="https://accounts.google.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://appleid.apple.com" crossOrigin="anonymous" />
+        {/* DNS prefetch for faster lookups */}
+        <link rel="dns-prefetch" href="https://accounts.google.com" />
+        <link rel="dns-prefetch" href="https://appleid.apple.com" />
+        {/* Prefetch critical auth routes */}
+        <link rel="prefetch" href="/api/auth/providers" />
+        <link rel="prefetch" href="/auth/signin" />
+      </head>
       <body className={`${inter.variable} h-full`}>
         <AuthProvider>{children}</AuthProvider>
       </body>

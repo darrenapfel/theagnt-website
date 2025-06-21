@@ -1,9 +1,10 @@
 import { NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
+import Apple from 'next-auth/providers/apple';
 import Credentials from 'next-auth/providers/credentials';
 import { supabaseAdmin } from './supabase';
 
-const providers = [
+const providers: any[] = [
   Google({
     clientId: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -58,33 +59,12 @@ const providers = [
 if (process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET && 
     process.env.APPLE_CLIENT_ID !== 'your_apple_client_id' && 
     process.env.APPLE_CLIENT_SECRET !== 'your_apple_client_secret') {
-  providers.push({
-    id: 'apple',
-    name: 'Apple',
-    type: 'oauth',
-    clientId: process.env.APPLE_CLIENT_ID,
-    clientSecret: process.env.APPLE_CLIENT_SECRET,
-    authorization: {
-      url: 'https://appleid.apple.com/auth/authorize',
-      params: {
-        scope: 'name email',
-        response_mode: 'form_post',
-      },
-    },
-    token: 'https://appleid.apple.com/auth/token',
-    userinfo: {
-      url: 'https://appleid.apple.com/auth/userinfo',
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    profile(profile: any) {
-      return {
-        id: profile.sub as string,
-        name: profile.name as string,
-        email: profile.email as string,
-        image: null,
-      };
-    },
-  });
+  providers.push(
+    Apple({
+      clientId: process.env.APPLE_CLIENT_ID,
+      clientSecret: process.env.APPLE_CLIENT_SECRET,
+    })
+  );
 }
 
 export const authConfig: NextAuthConfig = {
