@@ -1,10 +1,14 @@
 import { NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
+import Resend from 'next-auth/providers/resend';
 
 const providers = [
   Google({
     clientId: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+  }),
+  Resend({
+    from: process.env.EMAIL_FROM || 'noreply@theagnt.ai',
   }),
 ];
 
@@ -51,16 +55,16 @@ export const authConfig: NextAuthConfig = {
     error: '/auth/error',
   },
   callbacks: {
-    async session({ session, user }) {
-      if (session.user && user) {
-        session.user.id = user.id;
-        session.user.isAdmin = user.email === 'darrenapfel@gmail.com';
+    async session({ session, token }) {
+      if (session.user && token) {
+        // Use email as the user ID for simplicity
+        session.user.id = session.user.email;
+        session.user.isAdmin = session.user.email === 'darrenapfel@gmail.com';
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
         token.isAdmin = (user.email || '') === 'darrenapfel@gmail.com';
       }
       return token;
