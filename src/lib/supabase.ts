@@ -15,3 +15,15 @@ export const supabaseAdmin = createClient(
     },
   }
 );
+
+// For NextAuth.js email sending
+export const supabaseAuth = createClient(
+  supabaseUrl,
+  process.env.SUPABASE_SERVICE_KEY!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
+);

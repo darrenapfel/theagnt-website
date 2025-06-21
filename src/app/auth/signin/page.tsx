@@ -1,4 +1,5 @@
 import AuthButton from '@/components/auth/AuthButton';
+import EmailAuthButton from '@/components/auth/EmailAuthButton';
 
 export default function SignInPage() {
   return (
@@ -15,7 +16,7 @@ export default function SignInPage() {
 
           <AuthButton provider="apple">Continue with Apple</AuthButton>
 
-          <AuthButton provider="email">Continue with Email</AuthButton>
+          <EmailAuthButton>Continue with Email</EmailAuthButton>
         </div>
       </div>
     </div>

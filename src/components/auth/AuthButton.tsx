@@ -15,8 +15,8 @@ export default function AuthButton({ provider, children }: AuthButtonProps) {
     try {
       setIsLoading(true);
       
-      // Map 'email' to 'resend' for NextAuth
-      const authProvider = provider === 'email' ? 'resend' : provider;
+      // Map 'email' to 'email' for NextAuth
+      const authProvider = provider === 'email' ? 'email' : provider;
       
       console.log(`Attempting to sign in with provider: ${authProvider}`);
       

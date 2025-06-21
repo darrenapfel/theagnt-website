@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { auth } from '@/lib/auth-server';
 import Logo from '@/components/ui/Logo';
 import AuthButton from '@/components/auth/AuthButton';
+import EmailAuthButton from '@/components/auth/EmailAuthButton';
 
 export default async function Home() {
   await headers(); // Ensure headers are awaited
@@ -22,7 +23,7 @@ export default async function Home() {
 
           <AuthButton provider="apple">Continue with Apple</AuthButton>
 
-          <AuthButton provider="email">Continue with Email</AuthButton>
+          <EmailAuthButton>Continue with Email</EmailAuthButton>
         </div>
       </div>
     </div>
