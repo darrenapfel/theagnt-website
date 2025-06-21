@@ -14,10 +14,18 @@ export default function AuthButton({ provider, children }: AuthButtonProps) {
   const handleSignIn = async () => {
     try {
       setIsLoading(true);
-      await signIn(provider, {
+      
+      // Map 'email' to 'resend' for NextAuth
+      const authProvider = provider === 'email' ? 'resend' : provider;
+      
+      console.log(`Attempting to sign in with provider: ${authProvider}`);
+      
+      const result = await signIn(authProvider, {
         callbackUrl: '/dashboard',
         redirect: true,
       });
+      
+      console.log('Sign in result:', result);
     } catch (error) {
       console.error('Authentication error:', error);
     } finally {

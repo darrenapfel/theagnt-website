@@ -7,10 +7,16 @@ const providers = [
     clientId: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
   }),
-  Resend({
-    from: process.env.EMAIL_FROM || 'noreply@theagnt.ai',
-  }),
 ];
+
+// Only add Resend email provider if API key is configured
+if (process.env.AUTH_RESEND_KEY && process.env.AUTH_RESEND_KEY !== 'your_resend_api_key') {
+  providers.push(
+    Resend({
+      from: process.env.EMAIL_FROM || 'noreply@theagnt.ai',
+    })
+  );
+}
 
 // Only add Apple provider if credentials are properly configured
 if (process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET && 
@@ -46,9 +52,6 @@ if (process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET &&
 }
 
 export const authConfig: NextAuthConfig = {
-  experimental: {
-    enableWebAuthn: false,
-  },
   providers,
   pages: {
     signIn: '/auth/signin',
@@ -56,17 +59,27 @@ export const authConfig: NextAuthConfig = {
   },
   callbacks: {
     async session({ session, token }) {
-      if (session.user && token) {
+      console.log('Session callback - session:', session);
+      console.log('Session callback - token:', token);
+      
+      if (session.user) {
         // Use email as the user ID for simplicity
         session.user.id = session.user.email;
         session.user.isAdmin = session.user.email === 'darrenapfel@gmail.com';
       }
+      
+      console.log('Session callback - final session:', session);
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      console.log('JWT callback - token:', token);
+      console.log('JWT callback - user:', user);
+      console.log('JWT callback - account:', account);
+      
       if (user) {
         token.isAdmin = (user.email || '') === 'darrenapfel@gmail.com';
       }
+      
       return token;
     },
   },

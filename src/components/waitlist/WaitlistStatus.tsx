@@ -15,13 +15,27 @@ export default function WaitlistStatus() {
   }, [session]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkWaitlistStatus = async () => {
-    if (!session?.user?.id) return;
+    console.log('Session in checkWaitlistStatus:', session);
+    console.log('User ID:', session?.user?.id);
+    
+    if (!session?.user?.id) {
+      console.log('No session or user ID, stopping waitlist check');
+      setIsLoading(false);
+      return;
+    }
 
     try {
+      console.log('Making API request to /api/waitlist');
       const response = await fetch('/api/waitlist');
+      console.log('Waitlist API response status:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('Waitlist API response data:', data);
         setIsOnWaitlist(data.isOnWaitlist);
+      } else {
+        const errorText = await response.text();
+        console.error('Waitlist API error:', response.status, errorText);
       }
     } catch (error) {
       console.error('Error checking waitlist status:', error);
