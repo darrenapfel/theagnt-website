@@ -45,7 +45,7 @@ export default async function AuthError({ searchParams }: AuthErrorProps) {
         <h1 className="text-6xl font-thin text-foreground mb-12">theAGNT.ai</h1>
 
         <div className="space-y-4">
-          <p className="text-error text-base">{getErrorMessage(error)}</p>
+          <p className="text-error text-base" data-testid="error-message">{getErrorMessage(error)}</p>
           {error && (
             <p className="text-foreground/60 text-sm">Error code: {error}</p>
           )}

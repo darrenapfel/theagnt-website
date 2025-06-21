@@ -6,7 +6,7 @@ import AuthButton from '@/components/auth/AuthButton';
 import EmailAuthButton from '@/components/auth/EmailAuthButton';
 
 export default async function Home() {
-  await headers(); // Ensure headers are awaited
+  const headersList = await headers(); // Ensure headers are awaited properly
   const session = await auth();
 
   if (session) {
