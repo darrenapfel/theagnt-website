@@ -4,12 +4,15 @@ export async function sendMagicLink(email: string, redirectTo: string = '/dashbo
   try {
     console.log('📧 Generating magic link and sending via Resend to:', email);
     
-    // Generate the magic link without sending via Supabase
+    // Use production URL for all redirects
+    const baseUrl = 'https://theagnt-website-fm9tpxhxu-darrens-projects-0443eb48.vercel.app';
+    
+    // Generate the magic link using Supabase
     const { data, error } = await supabaseAdmin.auth.admin.generateLink({
       type: 'magiclink',
       email: email,
       options: {
-        redirectTo: `${process.env.NEXTAUTH_URL}/api/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+        redirectTo: `${baseUrl}${redirectTo}`,
       },
     });
 
@@ -23,7 +26,7 @@ export async function sendMagicLink(email: string, redirectTo: string = '/dashbo
       throw new Error('No magic link generated');
     }
 
-    console.log('✅ Magic link generated, now sending via Resend');
+    console.log('✅ Magic link generated:', magicLink);
 
     // Send email directly via Resend
     const resendResponse = await fetch('https://api.resend.com/emails', {
