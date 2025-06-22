@@ -19,22 +19,27 @@ export async function sendMagicLink(email: string, redirectTo: string = '/dashbo
     console.log('✅ Magic link generated:', magicLink);
 
     // Send email via Brevo SMTP
+    const smtpHost = process.env.SMTP_HOST?.trim();
+    const smtpPort = (process.env.SMTP_PORT || '587').trim();
+    const smtpUser = process.env.SMTP_USER?.trim();
+    const smtpPass = process.env.SMTP_PASS?.trim();
+    
     console.log('📧 Initializing Brevo SMTP with:', {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS ? '***' : 'missing'
+      host: smtpHost,
+      port: smtpPort,
+      user: smtpUser,
+      pass: smtpPass ? '***' : 'missing'
     });
 
     const nodemailer = await import('nodemailer');
     
     const transporter = nodemailer.default.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
+      host: smtpHost,
+      port: parseInt(smtpPort),
       secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: smtpUser,
+        pass: smtpPass,
       },
     });
 
