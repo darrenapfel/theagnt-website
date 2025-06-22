@@ -35,8 +35,8 @@ export default async function DashboardPage() {
     isAdmin: emailSession?.value === 'darrenapfel@gmail.com'
   };
   
-  // Ensure email is properly set
-  const finalEmail = user?.email || session?.user?.email || emailSession?.value || null;
+  // Ensure email is properly set - prioritize session email
+  const finalEmail = session?.user?.email || emailSession?.value || null;
 
   // Debug logging to help diagnose auth issues
   console.log('🔍 Dashboard Debug - Session:', session);
@@ -54,9 +54,14 @@ export default async function DashboardPage() {
 
   // More debug logging
   console.log('  - Final user object:', user);
-  console.log('  - User email passed to DashboardRedirect:', user.email);
-  console.log('  - Is user.email truthy?', !!user.email);
-  console.log('  - Email type:', typeof user.email);
+  console.log('  - finalEmail passed to DashboardRedirect:', finalEmail);
+  console.log('  - Is finalEmail truthy?', !!finalEmail);
+  console.log('  - Email type:', typeof finalEmail);
+  
+  // Production-specific debug
+  if (process.env.NODE_ENV === 'production' && finalEmail?.includes('@theagnt.ai')) {
+    console.log('🚨 PRODUCTION DEBUG - theagnt.ai user detected:', finalEmail);
+  }
 
   return (
     <DashboardRedirect userEmail={finalEmail}>

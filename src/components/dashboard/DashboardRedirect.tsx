@@ -21,6 +21,14 @@ export default function DashboardRedirect({ userEmail, children }: DashboardRedi
     // Production-safe logging
     const isDev = process.env.NODE_ENV === 'development';
     
+    // Always log for theagnt.ai emails to debug production issue
+    if (userEmail && typeof userEmail === 'string' && userEmail.includes('@theagnt.ai')) {
+      console.log('🚨 DashboardRedirect PRODUCTION DEBUG:');
+      console.log('  - Received userEmail:', userEmail);
+      console.log('  - userEmail type:', typeof userEmail);
+      console.log('  - About to check canAccessInternal...');
+    }
+    
     if (isDev || window.location.hostname === 'localhost') {
       console.log('🔄 DashboardRedirect Debug:');
       console.log('  - Received userEmail:', userEmail);
@@ -53,12 +61,21 @@ export default function DashboardRedirect({ userEmail, children }: DashboardRedi
     
     // Check if user should be redirected to internal dashboard
     if (canAccessInternal(normalizedEmail)) {
+      // Temporary production debug for theagnt.ai users
+      if (normalizedEmail.includes('@theagnt.ai')) {
+        console.log('🚨 PRODUCTION: Redirecting theagnt.ai user to /internal:', normalizedEmail);
+      }
       if (isDev || window.location.hostname === 'localhost') {
         console.log('  ✅ Redirecting to /internal');
       }
       setIsRedirecting(true);
       router.push('/internal');
     } else {
+      // Temporary production debug
+      if (normalizedEmail.includes('@theagnt.ai')) {
+        console.log('🚨 PRODUCTION ERROR: theagnt.ai user NOT redirecting:', normalizedEmail);
+        console.log('  - canAccessInternal returned false for:', normalizedEmail);
+      }
       if (isDev || window.location.hostname === 'localhost') {
         console.log('  ❌ Not redirecting - showing external dashboard');
       }
