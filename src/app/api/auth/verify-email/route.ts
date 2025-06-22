@@ -12,28 +12,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/?error=invalid-token', request.url));
     }
 
-    console.log('🔐 Verifying email magic link for:', email);
+    console.log('🔐 Email verification clicked for:', email);
 
-    // For this simple implementation, we'll create/get the user and sign them in
-    // In a more robust implementation, you'd store tokens in a database
-    
-    // Create or get user in Supabase
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: email,
-      email_confirm: true,
-    });
-
-    let userId = authData?.user?.id;
-
-    // If user already exists, that's fine - they can still sign in
-    if (authError && authError.message.includes('already registered')) {
-      console.log('✅ User already exists:', email);
-    }
-
-    if (!userId && authError && !authError.message.includes('already registered')) {
-      console.error('❌ Failed to create user:', authError);
-      return NextResponse.redirect(new URL('/?error=auth-failed', request.url));
-    }
+    // For this simple implementation, we just verify the email was clicked
+    // The user still needs to sign in with Google to complete authentication
+    // This approach avoids complex token storage and Supabase user management
 
     console.log('✅ Email verification successful for:', email);
 
