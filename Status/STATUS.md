@@ -1,8 +1,8 @@
 # theAGNT.ai Status
 
-**Last Updated**: June 22, 2025 by Claude (Waitlist Feature Implementation Complete)
+**Last Updated**: June 22, 2025 by Claude (TESTING & AUTH DEBUGGING IN PROGRESS)
 **Production URL**: https://theagnt-production.vercel.app  
-**Status**: ✅ WAITLIST FEATURE COMPLETE - Domain-based user experience working
+**Status**: 🧪 TESTING PHASE - Core feature complete, debugging auth & running comprehensive tests
 
 ## ✅ Currently Working
 - **Google OAuth**: ✅ FULLY FUNCTIONAL - working with real Google accounts
@@ -25,15 +25,19 @@
 
 ## ❌ Currently Broken  
 - **Apple Sign-in**: Temporarily disabled due to configuration complexity - may re-enable in future iteration
+- **PRODUCTION AUTH ISSUE**: User reports theagnt.ai emails still showing waitlist button instead of internal redirect
+- **PLAYWRIGHT TESTS**: Timing out due to NextAuth headers sync issues - tests show functionality works but have execution problems
 
-## 🚧 In Progress
-- No active development tasks - waitlist feature implementation complete
+## 🚧 In Progress - CRITICAL SESSION STATE
+- **PLAYWRIGHT E2E TESTING**: Running comprehensive test suite for waitlist feature validation
+- **AUTH DEBUGGING**: Investigating NextAuth headers sync issues causing test timeouts
+- **LOCALHOST AUTH BYPASS**: Implemented dev authentication system for testing
 
-## 🎯 Next Session Priority
-1. **Test with real users** - Verify @theagnt.ai user flow and external user flow work correctly
-2. **Performance optimization** - Monitor and optimize if needed after real usage
-3. **Apple Sign-in Future** - Consider re-enabling Apple authentication in future iteration
-4. **Additional features** - Based on user feedback and usage patterns
+## 🎯 IMMEDIATE NEXT SESSION PRIORITY (RESUME POINT)
+1. **CONTINUE TESTING** - Resume running Playwright E2E tests with updated permissions
+2. **FIX AUTH ISSUES** - Resolve production auth where theagnt.ai users aren't redirecting (user reported)
+3. **COMPLETE VALIDATION** - Ensure 100% functionality before marking as complete
+4. **COMMIT PROGRESS** - Git commit all testing improvements and bug fixes
 
 ## 📊 Current Metrics
 - **Authentication success rate**: 100% (2/2 active providers working) ✅ COMPLETE

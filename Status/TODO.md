@@ -1,26 +1,35 @@
 # theAGNT.ai Todo List
 
-**Last Updated**: June 22, 2025 (Waitlist Feature Implementation Complete)
+**Last Updated**: June 22, 2025 (TESTING & DEBUGGING PHASE)
 
-## 🔴 Critical (Ready for Testing)
+## 🔴 Critical (IMMEDIATE - RESUME POINT)
 
-### End-to-End User Testing
-- [ ] **Test @theagnt.ai user flow** 
-  - Sign in with @theagnt.ai email → Should redirect to `/internal`
-  - See "this is a special page" message
-  - Click "View Waitlist Entries" → Should navigate to `/internal/waitlist`
-  - Verify waitlist table displays correctly with export functionality
+### 🧪 PLAYWRIGHT TESTING - CONTINUE HERE
+- [ ] **Resume Playwright E2E Testing** (PRIORITY #1 - New permissions now allow this)
+  - `npm run dev &` - Start development server  
+  - `npm run test:e2e -- e2e/simple-waitlist-test.spec.ts --reporter=line` - Run simplified tests
+  - `npm run test:e2e -- e2e/waitlist-dev-auth.spec.ts --reporter=line` - Run comprehensive tests
+  - Fix any remaining timeout/headers sync issues
 
-- [ ] **Test external user flow**
-  - Sign in with non-theagnt.ai email → Should stay on `/dashboard`
-  - See waitlist join button
-  - Click join → Should add to waitlist with confirmation
-  - Verify duplicate checking works (click join again)
+### 🐛 PRODUCTION AUTH DEBUGGING - CRITICAL ISSUE
+- [ ] **Fix Production Auth Issue** (USER REPORTED PROBLEM)
+  - Debug why @theagnt.ai users see waitlist button instead of internal redirect
+  - Compare session structure: NextAuth session vs email-session cookie
+  - Test session handling in production vs development
+  - Ensure real OAuth/magic link users get proper domain detection
 
-- [ ] **Test admin user flow**
-  - Sign in as darrenapfel@gmail.com → Should redirect to `/internal`
-  - Access both internal dashboard and admin features
-  - Verify full access to waitlist management
+### ✅ VALIDATION & COMMIT
+- [ ] **Complete Feature Validation**
+  - All test flows working in dev authentication mode
+  - All test flows working with real authentication 
+  - Both user types (internal/external) experiencing correct UX
+  - No critical bugs or edge cases
+
+- [ ] **Git Commit Testing Infrastructure**
+  - Commit all dev authentication bypass files
+  - Commit comprehensive Playwright test suites
+  - Commit debug utilities and session debugging tools
+  - Update CLAUDE.md with testing protocols
 
 ## 🟡 Important (Future Enhancements)
 
