@@ -6,6 +6,7 @@ import WaitlistStatus from '@/components/waitlist/WaitlistStatus';
 import DashboardHeader from '@/components/ui/DashboardHeader';
 import DashboardRedirect from '@/components/dashboard/DashboardRedirect';
 import DevModeIndicator from '@/components/dev/DevModeIndicator';
+import AuthDebugClient from '@/components/debug/AuthDebugClient';
 
 export default async function DashboardPage() {
   await headers(); // Ensure headers are awaited
@@ -20,6 +21,7 @@ export default async function DashboardPage() {
   console.log('  - Email session cookie:', emailSession);
   console.log('  - Session user email:', session?.user?.email);
   console.log('  - Email session value:', emailSession?.value);
+  console.log('  - NODE_ENV:', process.env.NODE_ENV);
 
   // Allow access if either NextAuth session OR email session exists
   if (!session && !emailSession) {
@@ -32,6 +34,9 @@ export default async function DashboardPage() {
     name: emailSession?.value?.split('@')[0],
     isAdmin: emailSession?.value === 'darrenapfel@gmail.com'
   };
+  
+  // Ensure email is properly set
+  const finalEmail = user?.email || session?.user?.email || emailSession?.value || null;
 
   // Debug logging to help diagnose auth issues
   console.log('🔍 Dashboard Debug - Session:', session);
@@ -54,7 +59,7 @@ export default async function DashboardPage() {
   console.log('  - Email type:', typeof user.email);
 
   return (
-    <DashboardRedirect userEmail={user.email}>
+    <DashboardRedirect userEmail={finalEmail}>
       <div className="min-h-screen bg-background flex flex-col">
         <DashboardHeader />
 
@@ -80,6 +85,9 @@ export default async function DashboardPage() {
             </a>
           </footer>
         )}
+        
+        {/* Debug component */}
+        <AuthDebugClient userEmail={finalEmail} />
       </div>
     </DashboardRedirect>
   );

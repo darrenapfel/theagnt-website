@@ -26,18 +26,20 @@
 ## ❌ Currently Broken  
 - **Apple Sign-in**: Temporarily disabled due to configuration complexity - may re-enable in future iteration
 - **PRODUCTION AUTH ISSUE**: User reports theagnt.ai emails still showing waitlist button instead of internal redirect
-- **PLAYWRIGHT TESTS**: Timing out due to NextAuth headers sync issues - tests show functionality works but have execution problems
+- **MIDDLEWARE EXECUTION**: Next.js middleware not executing properly - added server-side layout protection as backup
+- **PLAYWRIGHT TESTS**: All tests failing due to dev login page issues - need to debug test environment
 
 ## 🚧 In Progress - CRITICAL SESSION STATE
-- **PLAYWRIGHT E2E TESTING**: Running comprehensive test suite for waitlist feature validation
-- **AUTH DEBUGGING**: Investigating NextAuth headers sync issues causing test timeouts
-- **LOCALHOST AUTH BYPASS**: Implemented dev authentication system for testing
+- **SECURITY FIX APPLIED**: Added server-side layout protection for /internal/* routes
+- **PRODUCTION AUTH DEBUGGING**: Need to test why NextAuth session emails aren't redirecting correctly
+- **TEST SCRIPT CREATED**: test-production-auth.js for browser console debugging
+- **MIDDLEWARE INVESTIGATION**: Determining why middleware isn't executing as expected
 
 ## 🎯 IMMEDIATE NEXT SESSION PRIORITY (RESUME POINT)
-1. **CONTINUE TESTING** - Resume running Playwright E2E tests with updated permissions
-2. **FIX AUTH ISSUES** - Resolve production auth where theagnt.ai users aren't redirecting (user reported)
-3. **COMPLETE VALIDATION** - Ensure 100% functionality before marking as complete
-4. **COMMIT PROGRESS** - Git commit all testing improvements and bug fixes
+1. **TEST PRODUCTION AUTH** - User should run test-production-auth.js in browser console after signing in
+2. **DEBUG SESSION STRUCTURE** - Compare NextAuth session.user.email vs email-session cookie
+3. **FIX PLAYWRIGHT TESTS** - Resolve dev login page timing issues
+4. **VALIDATE SECURITY** - Ensure external users cannot access /internal routes in production
 
 ## 📊 Current Metrics
 - **Authentication success rate**: 100% (2/2 active providers working) ✅ COMPLETE

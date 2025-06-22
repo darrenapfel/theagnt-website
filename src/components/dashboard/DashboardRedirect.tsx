@@ -18,31 +18,50 @@ export default function DashboardRedirect({ userEmail, children }: DashboardRedi
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
-    console.log('🔄 DashboardRedirect Debug:');
-    console.log('  - Received userEmail:', userEmail);
-    console.log('  - userEmail type:', typeof userEmail);
-    console.log('  - Is userEmail truthy?', !!userEmail);
+    // Production-safe logging
+    const isDev = process.env.NODE_ENV === 'development';
     
-    if (userEmail) {
-      const canAccess = canAccessInternal(userEmail);
+    if (isDev || window.location.hostname === 'localhost') {
+      console.log('🔄 DashboardRedirect Debug:');
+      console.log('  - Received userEmail:', userEmail);
+      console.log('  - userEmail type:', typeof userEmail);
+      console.log('  - Is userEmail truthy?', !!userEmail);
+    }
+    
+    // Defensive programming - ensure userEmail is a valid string
+    if (!userEmail || typeof userEmail !== 'string') {
+      if (isDev) {
+        console.log('  ⚠️ Invalid userEmail provided:', userEmail);
+      }
+      return;
+    }
+    
+    // Trim and normalize the email
+    const normalizedEmail = userEmail.trim().toLowerCase();
+    
+    if (isDev || window.location.hostname === 'localhost') {
+      const canAccess = canAccessInternal(normalizedEmail);
       console.log('  - canAccessInternal result:', canAccess);
-      console.log('  - Domain check for:', userEmail);
+      console.log('  - Normalized email:', normalizedEmail);
       
       // Additional domain debugging
-      const trimmedEmail = userEmail.trim().toLowerCase();
-      const domain = trimmedEmail.split('@')[1];
-      console.log('  - Trimmed email:', trimmedEmail);
+      const domain = normalizedEmail.split('@')[1];
       console.log('  - Extracted domain:', domain);
       console.log('  - Is theagnt.ai?', domain === 'theagnt.ai');
+      console.log('  - Is darrenapfel@gmail.com?', normalizedEmail === 'darrenapfel@gmail.com');
     }
     
     // Check if user should be redirected to internal dashboard
-    if (userEmail && canAccessInternal(userEmail)) {
-      console.log('  ✅ Redirecting to /internal');
+    if (canAccessInternal(normalizedEmail)) {
+      if (isDev || window.location.hostname === 'localhost') {
+        console.log('  ✅ Redirecting to /internal');
+      }
       setIsRedirecting(true);
       router.push('/internal');
     } else {
-      console.log('  ❌ Not redirecting - showing external dashboard');
+      if (isDev || window.location.hostname === 'localhost') {
+        console.log('  ❌ Not redirecting - showing external dashboard');
+      }
     }
   }, [userEmail, router]);
 

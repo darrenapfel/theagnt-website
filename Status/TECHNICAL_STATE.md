@@ -1,14 +1,14 @@
 # Technical State & Context for Next Session Resume
 
 **Session Date**: June 22, 2025  
-**Context**: Mid-testing phase - Core waitlist feature implemented, debugging auth and running comprehensive validation
+**Context**: Critical security fix applied, production auth debugging in progress
 
 ## 🔄 EXACT RESUME POINT
 
 ### Current Git State
 - **Branch**: `session/2025-06-22-waitlist-feature` 
-- **Status**: Code complete, in testing/debugging phase
-- **Last Major Commit**: Waitlist feature implementation with domain-based routing
+- **Status**: Security fix committed, production auth debugging needed
+- **Last Major Commit**: Added server-side protection for /internal routes (792eac4)
 
 ### Authentication Debug Context
 **CRITICAL ISSUE**: User reported that signing in with @theagnt.ai email addresses still shows waitlist button instead of redirecting to internal page.
@@ -81,12 +81,12 @@
 ## 📋 EXACT NEXT STEPS
 
 ### Immediate Actions (Order of Priority)
-1. **Start dev server**: `npm run dev` 
-2. **Run simplified Playwright test**: `npm run test:e2e -- e2e/simple-waitlist-test.spec.ts --reporter=line`
-3. **Debug production auth**: Compare session structure between dev and production
-4. **Fix real user auth flow**: Ensure @theagnt.ai users redirect in production
-5. **Complete comprehensive testing**: Full Playwright suite validation
-6. **Git commit progress**: Commit all testing infrastructure and bug fixes
+1. **Test production auth**: Have user run `test-production-auth.js` in browser console
+2. **Debug session structure**: Check if NextAuth session includes email properly
+3. **Fix middleware**: Investigate why Next.js middleware isn't executing
+4. **Validate security**: Test that external users cannot access /internal in production
+5. **Fix Playwright tests**: Resolve dev login page timing issues
+6. **Complete validation**: Ensure all user flows work correctly
 
 ### Commands Ready to Execute
 ```bash
@@ -108,12 +108,12 @@ npm run test:e2e -- e2e/waitlist-dev-auth.spec.ts --reporter=line
 - **Deployment**: Vercel production deployment available for real user testing
 
 ### Session Completion Criteria
-- [ ] Playwright tests run successfully without timeouts
+- [x] Critical security fix applied - external users blocked from /internal
 - [ ] Production auth issue resolved (theagnt.ai users redirect correctly)
+- [ ] Middleware execution issue diagnosed and fixed
+- [ ] Playwright tests running successfully
 - [ ] All user flows validated: internal, external, admin
-- [ ] Comprehensive test coverage confirmed
-- [ ] Git commit with testing infrastructure
-- [ ] Feature marked as 100% complete and production-ready
+- [ ] Feature marked as 100% secure and production-ready
 
 ## 🛠️ Technical Details for Quick Context
 
