@@ -28,7 +28,7 @@ export async function sendMagicLink(email: string, redirectTo: string = '/dashbo
 
     const nodemailer = await import('nodemailer');
     
-    const transporter = nodemailer.default.createTransporter({
+    const transporter = nodemailer.default.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false, // true for 465, false for other ports
