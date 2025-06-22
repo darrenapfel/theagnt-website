@@ -21,9 +21,13 @@ export default async function Home() {
         <div className="space-y-4">
           <AuthButton provider="google">Continue with Google</AuthButton>
 
-          <AuthButton provider="apple">Continue with Apple</AuthButton>
-
-          <EmailAuthButton>Continue with Email</EmailAuthButton>
+          {/* Temporarily disabled until email limits resolved */}
+          {/* <AuthButton provider="apple">Continue with Apple</AuthButton> */}
+          {/* <EmailAuthButton>Continue with Email</EmailAuthButton> */}
+          
+          <div className="text-center text-sm text-muted-foreground mt-6">
+            Sign in with your Google account to get started
+          </div>
         </div>
       </div>
     </div>
