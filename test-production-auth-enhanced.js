@@ -1,5 +1,17 @@
-// Enhanced production authentication test script
-// Run this in the browser console after signing in with a @theagnt.ai email
+/**
+ * Enhanced Production Authentication Test Script
+ * 
+ * HOW TO USE:
+ * 1. Sign in to the production website with your @theagnt.ai email
+ * 2. Open browser console (Right-click → Inspect → Console)
+ * 3. Copy and paste this ENTIRE file into the console
+ * 4. Press Enter to load the script
+ * 5. Type: testProductionAuth()
+ * 6. Press Enter to run the test
+ * 7. Share the console output with the development team
+ * 
+ * This script helps diagnose why @theagnt.ai users aren't being redirected
+ */
 
 async function testProductionAuth() {
   console.log('=== ENHANCED PRODUCTION AUTH TEST ===\n');
