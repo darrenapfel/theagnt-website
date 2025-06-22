@@ -3,9 +3,24 @@ import { auth } from '@/lib/auth-server';
 import { canAccessInternal, canAccessAdmin } from '@/lib/domain-utils';
 
 export async function middleware(request: NextRequest) {
+  console.log('🚨 MIDDLEWARE RUNNING for:', request.nextUrl.pathname);
   const session = await auth();
-  const isAuth = !!session?.user;
-  const userEmail = session?.user?.email;
+  
+  // Check for dev session in development mode
+  let isAuth = !!session?.user;
+  let userEmail = session?.user?.email;
+  
+  if (process.env.NODE_ENV === 'development') {
+    const emailSessionCookie = request.cookies.get('email-session');
+    const devSessionCookie = request.cookies.get('dev-session');
+    
+    if (emailSessionCookie && devSessionCookie?.value === 'true') {
+      // Use dev session
+      isAuth = true;
+      userEmail = emailSessionCookie.value;
+      console.log('🔧 Middleware: Using dev session for:', userEmail);
+    }
+  }
   
   // Route path checks
   const isAuthPage = request.nextUrl.pathname.startsWith('/auth');
@@ -34,18 +49,26 @@ export async function middleware(request: NextRequest) {
 
   // Internal routes protection - requires authentication AND theAGNT.ai domain
   if (isInternalPage) {
+    console.log('🔧 Middleware: Checking internal route access for:', userEmail);
+    
     // First check: user must be authenticated
     if (!isAuth) {
+      console.log('❌ Middleware: User not authenticated, redirecting to signin');
       return createRedirectWithFrom('/auth/signin');
     }
 
     // Second check: user must have internal access (theAGNT.ai domain or admin)
-    if (!canAccessInternal(userEmail)) {
+    const hasInternalAccess = canAccessInternal(userEmail);
+    console.log('🔧 Middleware: Internal access check:', { userEmail, hasInternalAccess });
+    
+    if (!hasInternalAccess) {
       // Redirect external users to their dashboard
+      console.log('❌ Middleware: External user blocked from internal route, redirecting to dashboard');
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     
     // User is authenticated and has internal access - allow through
+    console.log('✅ Middleware: Internal user allowed through');
     return null;
   }
 
@@ -67,5 +90,13 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/internal/:path*',
+    '/admin/:path*',
+    '/dashboard/:path*'
+  ],
 };
+
+// Add default export for Next.js compatibility
+export default middleware;

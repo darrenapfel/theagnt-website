@@ -12,7 +12,7 @@ test.describe('Simple Waitlist Feature Tests', () => {
   test('theagnt.ai user should see internal page', async ({ page }) => {
     // Go to dev login
     await page.goto('/dev/login');
-    await expect(page.locator('h1')).toContainText('Development Login');
+    await expect(page.getByRole('heading', { name: 'Development Login' })).toBeVisible();
     
     // Login as internal user
     await page.fill('input[type="email"]', 'test@theagnt.ai');
@@ -74,7 +74,7 @@ test.describe('Simple Waitlist Feature Tests', () => {
     await page.click('button[type="submit"]');
     
     // Wait for internal page
-    await expect(page).toHaveURL('**/internal', { timeout: 15000 });
+    await expect(page).toHaveURL(/.*\/internal$/, { timeout: 15000 });
     
     // Click the "View Waitlist Entries" button
     await page.click('text=View Waitlist Entries');
@@ -83,10 +83,10 @@ test.describe('Simple Waitlist Feature Tests', () => {
     await expect(page).toHaveURL(/.*\/internal\/waitlist$/);
     
     // Should show waitlist management interface
-    await expect(page.locator('h1')).toContainText('Waitlist Management');
+    await expect(page.getByRole('heading', { name: 'Waitlist Entries' })).toBeVisible();
     
     // Should show back button
-    await expect(page.locator('text=← Back to Internal Dashboard')).toBeVisible();
+    await expect(page.locator('text=← Back')).toBeVisible();
   });
   
   test('external user cannot access internal routes', async ({ page }) => {

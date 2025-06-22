@@ -10,9 +10,17 @@ export default async function Home({
 }: {
   searchParams: Promise<{ verified?: string; email?: string; error?: string }>;
 }) {
-  const headersList = await headers(); // Ensure headers are awaited properly
-  const session = await auth();
   const params = await searchParams; // Await searchParams
+  
+  // Only check auth if needed, and properly handle headers
+  let session = null;
+  try {
+    const headersList = await headers(); // Ensure headers are awaited properly
+    session = await auth();
+  } catch (error) {
+    console.log('Auth check failed on home page:', error);
+    // Continue without session
+  }
 
   if (session) {
     redirect('/dashboard');
