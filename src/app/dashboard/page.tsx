@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth-server';
 import Logo from '@/components/ui/Logo';
 import WaitlistStatus from '@/components/waitlist/WaitlistStatus';
 import DashboardHeader from '@/components/ui/DashboardHeader';
+import DashboardRedirect from '@/components/dashboard/DashboardRedirect';
 
 export default async function DashboardPage() {
   await headers(); // Ensure headers are awaited
@@ -24,26 +25,28 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <DashboardHeader />
+    <DashboardRedirect userEmail={user.email}>
+      <div className="min-h-screen bg-background flex flex-col">
+        <DashboardHeader />
 
-      <main className="flex-1 flex flex-col items-center justify-center p-6">
-        <div className="w-full max-w-md space-y-16">
-          <Logo size="default" animated={false} />
-          <WaitlistStatus user={user} />
-        </div>
-      </main>
+        <main className="flex-1 flex flex-col items-center justify-center p-6">
+          <div className="w-full max-w-md space-y-16">
+            <Logo size="default" animated={false} />
+            <WaitlistStatus user={user} />
+          </div>
+        </main>
 
-      {user.isAdmin && (
-        <footer className="absolute bottom-6 left-6">
-          <a
-            href="/admin"
-            className="text-foreground/40 hover:text-foreground/60 text-sm transition-colors duration-200"
-          >
-            Admin
-          </a>
-        </footer>
-      )}
-    </div>
+        {user.isAdmin && (
+          <footer className="absolute bottom-6 left-6">
+            <a
+              href="/admin"
+              className="text-foreground/40 hover:text-foreground/60 text-sm transition-colors duration-200"
+            >
+              Admin
+            </a>
+          </footer>
+        )}
+      </div>
+    </DashboardRedirect>
   );
 }
