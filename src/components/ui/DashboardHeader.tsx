@@ -1,10 +1,24 @@
 'use client';
 
 import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardHeader() {
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' });
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    // Clear email session cookie if it exists
+    document.cookie = 'email-session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    
+    // Also try NextAuth signout (will be a no-op if no NextAuth session)
+    try {
+      await signOut({ redirect: false });
+    } catch (error) {
+      // Ignore NextAuth errors if no session exists
+    }
+    
+    // Redirect to home
+    router.push('/');
   };
 
   return (

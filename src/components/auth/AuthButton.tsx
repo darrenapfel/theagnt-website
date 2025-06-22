@@ -1,26 +1,35 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import GoogleIcon from './icons/GoogleIcon';
+import AppleIcon from './icons/AppleIcon';
+import EmailIcon from './icons/EmailIcon';
+import OptimizedButton from '../ui/OptimizedButton';
+import { deduplicatedSignIn } from '../../lib/request-deduplication';
 
 interface AuthButtonProps {
   provider: 'google' | 'apple' | 'email';
   children: React.ReactNode;
+  'data-testid'?: string;
 }
 
-export default function AuthButton({ provider, children }: AuthButtonProps) {
+export default function AuthButton({ provider, children, 'data-testid': testId }: AuthButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignIn = async () => {
+  // Pre-compute provider mapping for faster execution
+  const authProvider = useMemo(() => {
+    return provider === 'email' ? 'email' : provider;
+  }, [provider]);
+
+  const handleSignIn = useCallback(async () => {
     try {
+      // Set loading state immediately for instant feedback
       setIsLoading(true);
-      
-      // Map 'email' to 'email' for NextAuth
-      const authProvider = provider === 'email' ? 'email' : provider;
       
       console.log(`Attempting to sign in with provider: ${authProvider}`);
       
-      const result = await signIn(authProvider, {
+      // Use deduplicated signIn to prevent multiple requests
+      const result = await deduplicatedSignIn(authProvider, {
         callbackUrl: '/dashboard',
         redirect: true,
       });
@@ -28,24 +37,38 @@ export default function AuthButton({ provider, children }: AuthButtonProps) {
       console.log('Sign in result:', result);
     } catch (error) {
       console.error('Authentication error:', error);
-    } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Only reset on error, success will redirect
     }
-  };
+  }, [authProvider]);
+
+  // Memoize icon to prevent unnecessary re-renders
+  const providerIcon = useMemo(() => {
+    switch (provider) {
+      case 'google':
+        return <GoogleIcon className="w-5 h-5" />;
+      case 'apple':
+        return <AppleIcon className="w-5 h-5" />;
+      case 'email':
+        return <EmailIcon className="w-5 h-5" />;
+      default:
+        return null;
+    }
+  }, [provider]);
 
   return (
-    <button
+    <OptimizedButton
       onClick={handleSignIn}
-      disabled={isLoading}
-      className="w-full h-12 border border-charcoal bg-transparent text-foreground font-medium text-base hover:bg-charcoal active:bg-dark-gray transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-charcoal focus:ring-offset-background"
+      loading={isLoading}
+      loadingText="Connecting..."
+      icon={providerIcon}
+      data-testid={testId || `${provider}-auth-button`}
+      className="w-full"
+      variant="outline"
+      size="md"
+      hapticFeedback={true}
+      instantFeedback={true}
     >
-      {isLoading ? (
-        <div className="flex items-center justify-center">
-          <div className="w-4 h-4 border-2 border-foreground border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : (
-        children
-      )}
-    </button>
+      {children}
+    </OptimizedButton>
   );
 }

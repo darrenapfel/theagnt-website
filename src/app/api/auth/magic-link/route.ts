@@ -23,14 +23,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // In development, return the magic link for testing
-    if (process.env.NODE_ENV === 'development') {
-      return NextResponse.json({
-        success: true,
-        message: 'Magic link sent successfully',
-        magicLink: result.magicLink, // Only in development
-      });
-    }
+    // Supabase handles email sending automatically, no magic link to return
 
     return NextResponse.json({
       success: true,
