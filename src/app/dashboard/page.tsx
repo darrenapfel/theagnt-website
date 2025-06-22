@@ -34,8 +34,16 @@ export default async function DashboardPage() {
   // Debug logging to help diagnose auth issues
   console.log('🔍 Dashboard Debug - Session:', session);
   console.log('🔍 Dashboard Debug - Email Session:', emailSession);
+  console.log('🔍 Dashboard Debug - Email Session Value:', emailSession?.value);
+  console.log('🔍 Dashboard Debug - Email Session Name:', emailSession?.name);
   console.log('🔍 Dashboard Debug - User Object:', user);
   console.log('🔍 Dashboard Debug - Final Email:', user.email);
+  
+  // Additional debugging for email session structure
+  if (emailSession) {
+    console.log('🔍 Email Session Properties:', Object.keys(emailSession));
+    console.log('🔍 Email Session Full Object:', JSON.stringify(emailSession));
+  }
 
   // More debug logging
   console.log('  - Final user object:', user);
