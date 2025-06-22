@@ -8,10 +8,11 @@ import EmailAuthButton from '@/components/auth/EmailAuthButton';
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { verified?: string; email?: string; error?: string };
+  searchParams: Promise<{ verified?: string; email?: string; error?: string }>;
 }) {
   const headersList = await headers(); // Ensure headers are awaited properly
   const session = await auth();
+  const params = await searchParams; // Await searchParams
 
   if (session) {
     redirect('/dashboard');
@@ -23,15 +24,15 @@ export default async function Home({
         <Logo size="large" animated />
 
         {/* Success/Error Messages */}
-        {searchParams.verified && (
+        {params.verified && (
           <div className="p-4 text-sm text-green-800 bg-green-100 border border-green-200 rounded-md">
-            ✅ Email verified! You can now sign in with Google using {searchParams.email}
+            ✅ Email verified! You can now sign in with Google using {params.email}
           </div>
         )}
 
-        {searchParams.error && (
+        {params.error && (
           <div className="p-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-md">
-            ❌ {searchParams.error === 'auth-failed' ? 'Authentication failed' : 'An error occurred'}
+            ❌ {params.error === 'auth-failed' ? 'Authentication failed' : 'An error occurred'}
           </div>
         )}
 

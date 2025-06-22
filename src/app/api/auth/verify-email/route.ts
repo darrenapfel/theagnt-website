@@ -25,14 +25,13 @@ export async function GET(request: NextRequest) {
 
     let userId = authData?.user?.id;
 
-    // If user already exists, get their ID
+    // If user already exists, that's fine - they can still sign in
     if (authError && authError.message.includes('already registered')) {
-      const { data: existingUser } = await supabaseAdmin.auth.admin.getUserByEmail(email);
-      userId = existingUser?.user?.id;
+      console.log('✅ User already exists:', email);
     }
 
-    if (!userId) {
-      console.error('❌ Failed to create or find user:', authError);
+    if (!userId && authError && !authError.message.includes('already registered')) {
+      console.error('❌ Failed to create user:', authError);
       return NextResponse.redirect(new URL('/?error=auth-failed', request.url));
     }
 
