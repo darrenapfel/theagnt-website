@@ -4,8 +4,8 @@ export async function sendMagicLink(email: string, redirectTo: string = '/dashbo
   try {
     console.log('📧 Sending magic link via Supabase to:', email);
     
-    // Use production URL for all redirects
-    const baseUrl = 'https://theagnt-website-6k9egwodc-darrens-projects-0443eb48.vercel.app';
+    // Use stable production URL for all redirects
+    const baseUrl = 'https://theagnt-production.vercel.app';
     
     // Use Supabase's built-in magic link system (completely free, no restrictions)
     const { data, error } = await supabaseAdmin.auth.signInWithOtp({
