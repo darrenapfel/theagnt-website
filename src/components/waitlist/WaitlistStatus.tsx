@@ -1,25 +1,34 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function WaitlistStatus() {
-  const { data: session } = useSession();
+interface User {
+  email?: string;
+  name?: string;
+  id?: string;
+  isAdmin?: boolean;
+}
+
+interface WaitlistStatusProps {
+  user: User;
+}
+
+export default function WaitlistStatus({ user }: WaitlistStatusProps) {
   const [isOnWaitlist, setIsOnWaitlist] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isJoining, setIsJoining] = useState(false);
 
   useEffect(() => {
     checkWaitlistStatus();
-  }, [session]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkWaitlistStatus = async () => {
-    console.log('Session in checkWaitlistStatus:', session);
-    console.log('User ID:', session?.user?.id);
+    console.log('User in checkWaitlistStatus:', user);
+    console.log('User email:', user?.email);
     
-    if (!session?.user?.id) {
-      console.log('No session or user ID, stopping waitlist check');
+    if (!user?.email) {
+      console.log('No user email, stopping waitlist check');
       setIsLoading(false);
       return;
     }
@@ -45,7 +54,7 @@ export default function WaitlistStatus() {
   };
 
   const joinWaitlist = async () => {
-    if (!session?.user?.id || isJoining) return;
+    if (!user?.email || isJoining) return;
 
     try {
       setIsJoining(true);
