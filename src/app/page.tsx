@@ -47,6 +47,18 @@ export default async function Home({
           <div className="text-center text-sm text-muted-foreground mt-6">
             Sign in with Google or get a magic link via email
           </div>
+
+          {/* Development mode shortcut */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="text-center mt-8">
+              <a
+                href="/dev/login"
+                className="text-xs text-electric-mint hover:text-electric-mint/80 transition-colors underline"
+              >
+                🔧 Development Login (localhost only)
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

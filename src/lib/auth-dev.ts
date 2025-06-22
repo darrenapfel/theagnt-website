@@ -49,7 +49,7 @@ export async function createDevSession(userType: TestUserType) {
   // Set a cookie that mimics our email session
   cookieStore.set('email-session', user.email, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Development mode, allow HTTP
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7 // 7 days
@@ -58,7 +58,7 @@ export async function createDevSession(userType: TestUserType) {
   // Also set a dev-session cookie to identify this as a test session
   cookieStore.set('dev-session', JSON.stringify(user), {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Development mode, allow HTTP
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7 // 7 days

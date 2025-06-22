@@ -37,11 +37,7 @@ export default async function DebugSessionPage() {
           <h2 className="text-xl font-semibold">Email Session Cookie</h2>
           {emailSession ? (
             <pre className="bg-black/10 p-4 rounded overflow-auto text-sm">
-              {JSON.stringify({
-                name: emailSession.name,
-                value: emailSession.value,
-                ...emailSession
-              }, null, 2)}
+              {JSON.stringify(emailSession, null, 2)}
             </pre>
           ) : (
             <p className="text-foreground/60">No email session cookie found</p>

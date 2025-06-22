@@ -5,12 +5,14 @@ import Logo from '@/components/ui/Logo';
 import WaitlistStatus from '@/components/waitlist/WaitlistStatus';
 import DashboardHeader from '@/components/ui/DashboardHeader';
 import DashboardRedirect from '@/components/dashboard/DashboardRedirect';
+import DevModeIndicator from '@/components/dev/DevModeIndicator';
 
 export default async function DashboardPage() {
   await headers(); // Ensure headers are awaited
   const session = await auth();
   const cookieStore = await cookies();
   const emailSession = cookieStore.get('email-session');
+  const devSession = cookieStore.get('dev-session');
 
   // Debug logging
   console.log('🔍 Dashboard Debug Info:');
@@ -55,6 +57,11 @@ export default async function DashboardPage() {
     <DashboardRedirect userEmail={user.email}>
       <div className="min-h-screen bg-background flex flex-col">
         <DashboardHeader />
+
+        {/* Development mode indicator */}
+        {devSession && process.env.NODE_ENV === 'development' && (
+          <DevModeIndicator userEmail={user.email || 'unknown'} />
+        )}
 
         <main className="flex-1 flex flex-col items-center justify-center p-6">
           <div className="w-full max-w-md space-y-16">
