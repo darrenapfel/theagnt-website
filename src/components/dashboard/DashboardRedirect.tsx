@@ -18,10 +18,31 @@ export default function DashboardRedirect({ userEmail, children }: DashboardRedi
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
+    console.log('🔄 DashboardRedirect Debug:');
+    console.log('  - Received userEmail:', userEmail);
+    console.log('  - userEmail type:', typeof userEmail);
+    console.log('  - Is userEmail truthy?', !!userEmail);
+    
+    if (userEmail) {
+      const canAccess = canAccessInternal(userEmail);
+      console.log('  - canAccessInternal result:', canAccess);
+      console.log('  - Domain check for:', userEmail);
+      
+      // Additional domain debugging
+      const trimmedEmail = userEmail.trim().toLowerCase();
+      const domain = trimmedEmail.split('@')[1];
+      console.log('  - Trimmed email:', trimmedEmail);
+      console.log('  - Extracted domain:', domain);
+      console.log('  - Is theagnt.ai?', domain === 'theagnt.ai');
+    }
+    
     // Check if user should be redirected to internal dashboard
     if (userEmail && canAccessInternal(userEmail)) {
+      console.log('  ✅ Redirecting to /internal');
       setIsRedirecting(true);
       router.push('/internal');
+    } else {
+      console.log('  ❌ Not redirecting - showing external dashboard');
     }
   }, [userEmail, router]);
 

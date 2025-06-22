@@ -12,6 +12,13 @@ export default async function DashboardPage() {
   const cookieStore = await cookies();
   const emailSession = cookieStore.get('email-session');
 
+  // Debug logging
+  console.log('🔍 Dashboard Debug Info:');
+  console.log('  - NextAuth session:', session);
+  console.log('  - Email session cookie:', emailSession);
+  console.log('  - Session user email:', session?.user?.email);
+  console.log('  - Email session value:', emailSession?.value);
+
   // Allow access if either NextAuth session OR email session exists
   if (!session && !emailSession) {
     redirect('/auth/signin');
@@ -23,6 +30,18 @@ export default async function DashboardPage() {
     name: emailSession?.value?.split('@')[0],
     isAdmin: emailSession?.value === 'darrenapfel@gmail.com'
   };
+
+  // Debug logging to help diagnose auth issues
+  console.log('🔍 Dashboard Debug - Session:', session);
+  console.log('🔍 Dashboard Debug - Email Session:', emailSession);
+  console.log('🔍 Dashboard Debug - User Object:', user);
+  console.log('🔍 Dashboard Debug - Final Email:', user.email);
+
+  // More debug logging
+  console.log('  - Final user object:', user);
+  console.log('  - User email passed to DashboardRedirect:', user.email);
+  console.log('  - Is user.email truthy?', !!user.email);
+  console.log('  - Email type:', typeof user.email);
 
   return (
     <DashboardRedirect userEmail={user.email}>

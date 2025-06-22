@@ -10,6 +10,12 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
+    // Always use headless mode by default
+    headless: true,
+    // Disable slow motion
+    launchOptions: {
+      slowMo: 0,
+    },
   },
   projects: [
     {
