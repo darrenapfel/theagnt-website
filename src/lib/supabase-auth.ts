@@ -17,6 +17,19 @@ export async function sendMagicLink(email: string, redirectTo: string = '/dashbo
 
     if (error) {
       console.error('❌ Error sending magic link:', error);
+      
+      // Handle rate limiting with user-friendly message
+      if (error.message?.includes('Email rate limit exceeded') || 
+          error.message?.includes('rate_limit_exceeded') ||
+          error.message?.includes('too_many_requests')) {
+        throw new Error('Please wait 60 seconds before requesting another magic link');
+      }
+      
+      // Handle other common errors
+      if (error.message?.includes('invalid_email')) {
+        throw new Error('Please enter a valid email address');
+      }
+      
       throw error;
     }
 

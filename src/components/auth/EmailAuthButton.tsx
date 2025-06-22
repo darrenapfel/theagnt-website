@@ -17,6 +17,7 @@ export default function EmailAuthButton({ children, 'data-testid': testId }: Ema
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [cooldownTime, setCooldownTime] = useState(0);
 
   const handleInitialClick = useCallback(() => {
     setShowEmailForm(true);
@@ -43,10 +44,17 @@ export default function EmailAuthButton({ children, 'data-testid': testId }: Ema
 
       setMessage('Magic link sent! Check your email and click the link to sign in.');
       
-      // In development, also log the magic link
-      if (data.magicLink && process.env.NODE_ENV === 'development') {
-        console.log('🔗 Development Magic Link:', data.magicLink);
-      }
+      // Start 60-second cooldown to prevent rate limiting
+      setCooldownTime(60);
+      const interval = setInterval(() => {
+        setCooldownTime(prev => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
 
     } catch (error) {
       console.error('❌ Error sending magic link:', error);
@@ -75,7 +83,7 @@ export default function EmailAuthButton({ children, 'data-testid': testId }: Ema
               data-testid="email-input"
               className="w-full h-12 px-4 border border-charcoal bg-transparent text-foreground placeholder-muted-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-charcoal focus:border-charcoal transition-all duration-200 ease-out"
               required
-              disabled={isLoading}
+              disabled={isLoading || cooldownTime > 0}
             />
           </div>
           
@@ -90,8 +98,9 @@ export default function EmailAuthButton({ children, 'data-testid': testId }: Ema
             icon={<EmailIcon className="w-4 h-4" />}
             hapticFeedback={true}
             instantFeedback={true}
+            disabled={cooldownTime > 0}
           >
-            Send Magic Link
+            {cooldownTime > 0 ? `Wait ${cooldownTime}s` : 'Send Magic Link'}
           </OptimizedButton>
         </form>
 
