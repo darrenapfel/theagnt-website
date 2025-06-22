@@ -22,15 +22,14 @@ export async function GET(request: NextRequest) {
 
     let user = authData?.user;
 
-    // If user already exists, get their info
-    if (authError && authError.message.includes('already registered')) {
-      console.log('✅ User already exists, getting user info');
+    // If user already exists, that's fine - we'll create a session anyway
+    if (authError && (authError.message.includes('already registered') || authError.code === 'email_exists')) {
+      console.log('✅ User already exists, proceeding with session creation');
       // For existing users, we'll create a session anyway
-      // In production, you'd want better user lookup, but this works for the demo
       user = { email, id: email, email_confirmed_at: new Date().toISOString() } as any;
     }
 
-    if (!user && authError && !authError.message.includes('already registered')) {
+    if (!user && authError && !authError.message.includes('already registered') && authError.code !== 'email_exists') {
       console.error('❌ Failed to create user:', authError);
       return NextResponse.redirect(new URL('/?error=auth-failed', request.url));
     }
