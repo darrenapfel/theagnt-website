@@ -25,3 +25,34 @@ export interface UserWithWaitlist extends User {
   waitlist_status: boolean;
   waitlist_joined_at?: string;
 }
+
+// Domain validation types
+export type UserRole = 'admin' | 'internal' | 'external';
+
+export interface UserAccess {
+  /** User's role based on email domain */
+  role: UserRole;
+  /** Whether user has admin privileges */
+  isAdmin: boolean;
+  /** Whether user belongs to theAGNT.ai organization */
+  isInternal: boolean;
+  /** Whether user can access internal features */
+  canAccessInternal: boolean;
+  /** Whether user can access admin features */
+  canAccessAdmin: boolean;
+  /** User's permission level for feature access */
+  permissionLevel: 'none' | 'basic' | 'internal' | 'admin';
+}
+
+export interface DomainValidationResult {
+  /** Whether the email is valid */
+  isValid: boolean;
+  /** Whether the email belongs to theAGNT.ai domain */
+  isDomainMatch: boolean;
+  /** Extracted domain from email (if valid) */
+  domain?: string;
+  /** Extracted username from email (if valid) */
+  username?: string;
+  /** Error message if validation failed */
+  error?: string;
+}
