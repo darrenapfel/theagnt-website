@@ -1,11 +1,8 @@
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
+  "alias": ["theagnt-production.vercel.app"],
   "functions": {
-    "src/pages/api/**/*.js": {
-      "maxDuration": 10
+    "src/app/api/auth/[...nextauth]/route.ts": {
+      "maxDuration": 30
     }
   }
 }

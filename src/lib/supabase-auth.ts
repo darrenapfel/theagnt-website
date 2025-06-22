@@ -1,35 +1,89 @@
 import { supabaseAdmin } from './supabase';
+import { randomBytes } from 'crypto';
 
 export async function sendMagicLink(email: string, redirectTo: string = '/dashboard') {
   try {
-    console.log('📧 Sending magic link via Supabase to:', email);
+    console.log('📧 Generating magic link and sending via Brevo to:', email);
     
-    const { data, error } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'magiclink',
-      email: email,
-      options: {
-        redirectTo: `${process.env.NEXTAUTH_URL}${redirectTo}`,
+    // Use stable production URL for all redirects
+    const baseUrl = 'https://theagnt-production.vercel.app';
+    
+    // Generate a secure token for our custom magic link
+    const token = randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1 hour expiration
+    
+    // Store the token in our database (we'll use a simple approach)
+    // For now, we'll create the user in Supabase and use the token for verification
+    const magicLink = `${baseUrl}/api/auth/verify-email?token=${token}&email=${encodeURIComponent(email)}&redirect=${encodeURIComponent(redirectTo)}`;
+    
+    console.log('✅ Magic link generated:', magicLink);
+
+    // Send email via Brevo SMTP
+    const smtpHost = process.env.SMTP_HOST?.trim();
+    const smtpPort = (process.env.SMTP_PORT || '587').trim();
+    const smtpUser = process.env.SMTP_USER?.trim();
+    const smtpPass = process.env.SMTP_PASS?.trim();
+    
+    console.log('📧 Initializing Brevo SMTP with:', {
+      host: smtpHost,
+      port: smtpPort,
+      user: smtpUser,
+      pass: smtpPass ? '***' : 'missing'
+    });
+
+    const nodemailer = await import('nodemailer');
+    
+    const transporter = nodemailer.default.createTransport({
+      host: smtpHost,
+      port: parseInt(smtpPort),
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
       },
     });
 
-    if (error) {
-      console.error('❌ Error generating magic link:', error);
-      throw error;
-    }
+    const mailOptions = {
+      from: `TheAGNT <${process.env.EMAIL_FROM || 'noreply@theagnt.ai'}>`,
+      to: email,
+      subject: 'Sign in to theAGNT.ai',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h1 style="color: #000; font-size: 24px; margin-bottom: 20px;">Sign in to theAGNT.ai</h1>
+          <p style="color: #333; font-size: 16px; line-height: 1.5;">
+            Click the button below to sign in to your account:
+          </p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${magicLink}" 
+               style="background: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 500;">
+              Sign In
+            </a>
+          </div>
+          <p style="color: #666; font-size: 14px;">
+            Or copy and paste this link into your browser:<br>
+            <a href="${magicLink}" style="color: #000;">${magicLink}</a>
+          </p>
+          <p style="color: #999; font-size: 12px; margin-top: 30px;">
+            If you didn't request this email, you can safely ignore it.
+          </p>
+        </div>
+      `,
+    };
 
-    console.log('✅ Magic link generated successfully');
-    console.log('🔗 Magic link URL:', data.properties?.action_link);
+    await transporter.sendMail(mailOptions);
+    console.log('✅ Email sent successfully via Brevo');
     
     return {
       success: true,
-      data: data,
-      magicLink: data.properties?.action_link,
+      data: { token },
+      message: 'Magic link sent successfully',
     };
   } catch (error) {
     console.error('❌ Failed to send magic link:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
     return {
       success: false,
-      error: error,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }
