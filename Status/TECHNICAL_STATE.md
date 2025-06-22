@@ -7,8 +7,8 @@
 
 ### Current Git State
 - **Branch**: `session/2025-06-22-waitlist-feature` 
-- **Status**: Security fix committed, production auth debugging needed
-- **Last Major Commit**: Added server-side protection for /internal routes (792eac4)
+- **Status**: Auth debugging tools deployed, awaiting production test results
+- **Last Major Commit**: Added comprehensive auth debugging tools (610d554)
 
 ### Authentication Debug Context
 **CRITICAL ISSUE**: User reported that signing in with @theagnt.ai email addresses still shows waitlist button instead of redirecting to internal page.
