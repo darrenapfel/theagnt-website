@@ -1,45 +1,32 @@
 # theAGNT.ai Todo List
 
-**Last Updated**: June 21, 2025
+**Last Updated**: June 21, 2025 (Evening Session - Major Progress)
 
-## 🔴 Critical (Authentication BROKEN - All Providers 0% Working)
+## 🔴 Critical (Apple Sign-in Issue - 1/3 Providers Not Working)
 
-### External Service Configuration (MANUAL ACCESS REQUIRED)
-- [ ] **Fix Google OAuth configuration** (REQUIRES GOOGLE CLOUD CONSOLE ACCESS)
-  - Login to Google Cloud Console: https://console.cloud.google.com/
-  - Navigate to APIs & Services → Credentials
-  - Add redirect URI: https://theagnt-website.vercel.app/api/auth/callback/google
-  - Add redirect URI: https://theagnt-website-darrens-projects-0443eb48.vercel.app/api/auth/callback/google
-  - Add JavaScript origins for both domains
-  - *BLOCKING: Google OAuth "Server configuration error"*
+### Remaining Authentication Issues
+- [ ] **Apple Sign-in Deep Debug** (COMPLEX ISSUE)
+  - All external configurations verified as correct:
+    ✅ Service ID: ai.theagnt.wwwservice properly configured
+    ✅ Return URLs include both Vercel domains  
+    ✅ App ID has Sign in with Apple capability enabled
+    ✅ Fresh JWT generated with Dec 2025 expiration
+  - *BLOCKING: Still getting "Signup not completed" error despite correct configuration*
+  - *INVESTIGATION NEEDED: May require alternative debugging approach or Apple-specific configuration*
 
-- [ ] **Fix Apple Sign-in configuration** (REQUIRES APPLE DEVELOPER CONSOLE ACCESS)
-  - Login to Apple Developer Console: https://developer.apple.com/account/
-  - Verify Service ID: ai.theagnt.wwwservice configuration
-  - Check return URLs include both Vercel domains
-  - Verify App ID has Sign in with Apple capability enabled
-  - *BLOCKING: Apple "Signup Not Completed" error*
+### End-to-End Testing & Finalization
+- [x] **Test Google OAuth** ✅ COMPLETED - 100% success rate with real accounts
+- [x] **Test Email Magic Links** ✅ COMPLETED - Direct Resend integration working perfectly
+- [ ] **Fix Apple Sign-in** - Still producing "signup not completed" error
+- [ ] **Complete user journey testing** - Validate signup → dashboard → waitlist flow
+- [ ] **Production domain migration** - Move to theAGNT.ai from Vercel preview URLs
 
-- [ ] **Fix Email Magic Link delivery** (REQUIRES SUPABASE DASHBOARD ACCESS)
-  - Login to Supabase Dashboard: https://supabase.com/dashboard/project/pjezwviuuywujhjbkmyw
-  - Navigate to Authentication → Settings → Email Templates
-  - Configure SMTP settings or enable built-in email service
-  - Test email delivery with real email address
-  - *BLOCKING: No emails received, magic links never arrive*
-
-### End-to-End Testing (AFTER MANUAL FIXES)
-- [ ] **Test all authentication providers with real accounts**
-  - Test Google OAuth with real Google account
-  - Test Apple Sign-in with real Apple ID
-  - Test Email magic link with real email address
-  - Verify all providers redirect to dashboard successfully
-  - *VALIDATION: Confirm 100% authentication success rate*
-
-## 🟡 Important (UI Polish - COMPLETED)
-- [x] **Enhanced Vercel-style UI** (COMPLETED - looks much better)
-- [x] **Fixed UI styling issue** (COMPLETED June 21, 2025)
-  - ✅ FIXED: Green text on white background → now white text on dark background with proper spacing
-  - ✅ FIXED: Poor spacing between email input and success message → added mt-4 margin
+## 🟡 Important (Ready for Production)
+- [x] **Enhanced Vercel-style UI** ✅ COMPLETED - Premium dark theme implemented
+- [x] **Google OAuth Integration** ✅ COMPLETED - Fully functional with real accounts
+- [x] **Email Magic Link System** ✅ COMPLETED - Direct Resend integration with domain verification
+- [x] **Vercel Environment Setup** ✅ COMPLETED - All environment variables configured
+- [x] **Fresh Apple JWT** ✅ COMPLETED - New client secret valid until Dec 2025
 
 ## 🟡 Important (Post-Launch Optimization)
 
@@ -92,30 +79,37 @@
 
 ## ✅ Completed
 
-### MAJOR UPGRADE - Authentication & UI Overhaul (June 21, 2025)
-- [x] **Complete Authentication System** (June 21, 2025)
-  - Google OAuth fully configured and working
-  - Apple Sign-in with fresh certificates and proper configuration
-  - Email magic link authentication optimized
-  - 100% provider success rate achieved (up from 33%)
+### MAJOR BREAKTHROUGH - Authentication Fixed (June 21, 2025 Evening)
+- [x] **Google OAuth System** ✅ FULLY FUNCTIONAL (June 21, 2025)
+  - Fixed by disabling Vercel authentication protection
+  - Correct redirect URIs configured and working
+  - 100% success rate with real Google accounts
+  - Seamless signup → dashboard flow
 
-- [x] **Premium Vercel-Style UI Implementation** (June 21, 2025)
+- [x] **Email Magic Link System** ✅ FULLY FUNCTIONAL (June 21, 2025)
+  - Direct Resend API integration implemented
+  - Bypassed Supabase SMTP configuration issues
+  - theAGNT.ai domain verified in Resend
+  - Professional email templates with proper styling
+  - Magic links delivered to any email address
+  - 100% success rate with real email testing
+
+- [x] **Fresh Apple Sign-in Configuration** ✅ COMPLETED (June 21, 2025)
+  - Generated new JWT client secret (valid until Dec 2025)
+  - Updated Vercel environment variables
+  - All Apple Developer Console configurations verified
+  - *Note: Still experiencing "signup not completed" error despite correct setup*
+
+- [x] **Vercel Protection Issue Resolution** ✅ COMPLETED (June 21, 2025)
+  - Identified root cause: Vercel authentication was blocking /api/auth/* routes
+  - Disabled protection to allow public access to authentication endpoints
+  - Verified auth endpoints accessible without permission prompts
+
+- [x] **Premium UI Implementation** ✅ COMPLETED (June 21, 2025)
   - Complete design system overhaul with dark theme
   - Professional provider icons and enhanced typography
   - GPU-accelerated animations and micro-interactions
   - Responsive design across all devices and browsers
-
-- [x] **Performance Optimization** (June 21, 2025)
-  - 61% improvement in click response times (<500ms)
-  - 76% bundle size reduction through code splitting
-  - Service worker implementation with intelligent caching
-  - Enhanced loading states and smooth animations
-
-- [x] **Comprehensive Testing** (June 21, 2025)
-  - 200+ automated tests across UI, integration, and accessibility
-  - Cross-browser validation (Chrome, Firefox, Safari)
-  - Visual regression testing with 81 test cases
-  - End-to-end production testing confirms 100% functionality
 
 ### Previous Infrastructure & Core Features
 - [x] **Core infrastructure complete** (Prior sessions)
@@ -141,19 +135,30 @@
 ## 📋 Development Notes
 
 ### Quick Start for Next Session
-**ORCHESTRATED DEVELOPMENT READY** - All analysis and tests complete
+**67% AUTHENTICATION SUCCESS ACHIEVED** - Major breakthrough completed
 
-**Immediate Priority Tasks** (Ready for Implementation):
-1. **Google OAuth Fix** - Google Cloud Console redirect URI update (5 minutes)
-2. **Apple Sign-in Fix** - Apple Developer Console return URL update (5 minutes)  
-3. **Email Provider Setup** - Supabase SMTP configuration (10 minutes)
-4. **Vercel UI Styling** - Implement design system (30 minutes)
-5. **E2E Validation** - Run complete test suite to verify fixes (10 minutes)
+**Current Status**:
+- ✅ **Google OAuth**: 100% functional
+- ✅ **Email Magic Links**: 100% functional  
+- ❌ **Apple Sign-in**: Still failing with "signup not completed"
 
-**All configuration details and exact steps documented in orchestrator analysis report**
+**Immediate Priority Tasks**:
+1. **Apple Sign-in Deep Debug** - Investigate why configuration appears correct but still fails (30-60 minutes)
+2. **Alternative Apple Approach** - Consider temporarily removing Apple sign-in or trying different configuration (15 minutes)
+3. **Production Testing** - Comprehensive user journey validation with working auth providers (10 minutes)
+4. **Domain Migration** - Move to theAGNT.ai production domain (20 minutes)
+
+**Technical Context**:
+- **Apple JWT**: Fresh client secret valid until Dec 2025
+- **Resend Integration**: Direct API implementation bypassing Supabase
+- **Vercel Environment**: All variables correctly configured
+- **Production URL**: https://theagnt-website-cm90gk64t-darrens-projects-0443eb48.vercel.app
 
 ### Context for Future Work
-- **EmailAuthButton** component location: `/src/components/auth/EmailAuthButton.tsx`
-- **Auth configuration**: `/src/lib/auth.ts` (NextAuth + Supabase hybrid)
-- **Production testing URL**: https://theagnt-website.vercel.app
-- **Admin dashboard**: https://theagnt-website.vercel.app/admin (darrenapfel@gmail.com only)
+- **Email Integration**: `/src/lib/supabase-auth.ts` - Direct Resend API implementation
+- **Auth configuration**: `/src/lib/auth.ts` - NextAuth v5 + Supabase hybrid
+- **Apple JWT Generator**: Generated fresh client secret (Dec 2025 expiration)
+- **Production testing URL**: https://theagnt-website-cm90gk64t-darrens-projects-0443eb48.vercel.app
+- **Resend Dashboard**: Domain verified, unlimited email sending enabled
+- **Working Test Email**: Magic links successfully delivered to darren@theapfels.org and any email
+- **MCP Servers**: Curl and Fetch MCP servers installed for autonomous HTTP operations
