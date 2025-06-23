@@ -27,15 +27,17 @@ export default function InternalWaitlistPage() {
   const fetchWaitlistData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/admin');
+      const response = await fetch('/api/internal/waitlist');
 
       if (!response.ok) {
-        throw new Error('Failed to fetch waitlist data');
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to fetch waitlist data (${response.status})`);
       }
 
       const dashboardData = await response.json();
       setData(dashboardData);
     } catch (err) {
+      console.error('Error fetching waitlist:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setIsLoading(false);
