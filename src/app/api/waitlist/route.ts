@@ -12,14 +12,15 @@ export async function GET() {
     console.log('GET /api/waitlist - session:', session);
     console.log('GET /api/waitlist - cookies:', cookieStore.getAll().map(c => c.name));
 
-    // Check for dev session in development
+    // Check for session - handle Safari cookie issues
     let userId = session?.user?.id || session?.user?.email;
     
-    if (!userId && process.env.NODE_ENV === 'development') {
+    // Fallback to email-session cookie (Safari workaround)
+    if (!userId) {
       const emailSession = cookieStore.get('email-session');
-      if (emailSession?.value) {
+      if (emailSession?.value && emailSession.value.includes('@')) {
         userId = emailSession.value;
-        console.log('Using dev session email:', userId);
+        console.log('Using email-session cookie (Safari fallback):', userId);
       }
     }
     
@@ -63,14 +64,15 @@ export async function POST(request: NextRequest) {
     console.log('POST /api/waitlist - session:', session);
     console.log('POST /api/waitlist - cookies:', cookieStore.getAll().map(c => c.name));
 
-    // Check for dev session in development
+    // Check for session - handle Safari cookie issues
     let userId = session?.user?.id || session?.user?.email;
     
-    if (!userId && process.env.NODE_ENV === 'development') {
+    // Fallback to email-session cookie (Safari workaround)
+    if (!userId) {
       const emailSession = cookieStore.get('email-session');
-      if (emailSession?.value) {
+      if (emailSession?.value && emailSession.value.includes('@')) {
         userId = emailSession.value;
-        console.log('Using dev session email:', userId);
+        console.log('Using email-session cookie (Safari fallback):', userId);
       }
     }
     
@@ -81,6 +83,10 @@ export async function POST(request: NextRequest) {
 
     console.log('Adding user to waitlist:', userId);
     
+    // Determine user details for metadata
+    const userEmail = session?.user?.email || userId;
+    const userName = session?.user?.name || userEmail?.split('@')[0] || 'Unknown';
+    
     const { data, error } = await supabaseAdmin
       .from('waitlist')
       .insert({
@@ -88,8 +94,9 @@ export async function POST(request: NextRequest) {
         metadata: {
           joined_from: 'dashboard',
           user_agent: request.headers.get('user-agent'),
-          email: session?.user?.email || userId,
-          name: session?.user?.name || 'Unknown',
+          email: userEmail,
+          name: userName,
+          auth_method: session?.user ? 'oauth' : 'magic-link'
         },
       })
       .select()
