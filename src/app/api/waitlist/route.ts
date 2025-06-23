@@ -9,23 +9,33 @@ export async function GET() {
     const session = await auth();
     const cookieStore = await cookies();
 
-    console.log('GET /api/waitlist - session:', session);
-    console.log('GET /api/waitlist - cookies:', cookieStore.getAll().map(c => c.name));
+    console.log('GET /api/waitlist - session:', JSON.stringify(session));
+    
+    const allCookies = cookieStore.getAll();
+    console.log('GET /api/waitlist - all cookies:', allCookies.map(c => ({ name: c.name, value: c.value })));
 
     // Check for session - handle Safari cookie issues
     let userId = session?.user?.id || session?.user?.email;
+    console.log('Initial userId from session:', userId);
     
-    // Fallback to email-session cookie (Safari workaround)
-    if (!userId) {
-      const emailSession = cookieStore.get('email-session');
-      if (emailSession?.value && emailSession.value.includes('@')) {
+    // Always check email-session cookie as fallback
+    const emailSession = cookieStore.get('email-session');
+    console.log('Email session cookie:', emailSession);
+    
+    if (!userId && emailSession?.value) {
+      // Validate it looks like an email
+      if (emailSession.value.includes('@')) {
         userId = emailSession.value;
-        console.log('Using email-session cookie (Safari fallback):', userId);
+        console.log('Using email-session cookie as userId:', userId);
+      } else {
+        console.log('Invalid email-session cookie value:', emailSession.value);
       }
     }
     
     if (!userId) {
-      console.error('No user ID or email in session');
+      console.error('No valid user ID found in session or cookies');
+      console.error('Session was:', session);
+      console.error('Cookies were:', allCookies.map(c => c.name));
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -61,23 +71,33 @@ export async function POST(request: NextRequest) {
     const session = await auth();
     const cookieStore = await cookies();
 
-    console.log('POST /api/waitlist - session:', session);
-    console.log('POST /api/waitlist - cookies:', cookieStore.getAll().map(c => c.name));
+    console.log('POST /api/waitlist - session:', JSON.stringify(session));
+    
+    const allCookies = cookieStore.getAll();
+    console.log('POST /api/waitlist - all cookies:', allCookies.map(c => ({ name: c.name, value: c.value })));
 
     // Check for session - handle Safari cookie issues
     let userId = session?.user?.id || session?.user?.email;
+    console.log('Initial userId from session:', userId);
     
-    // Fallback to email-session cookie (Safari workaround)
-    if (!userId) {
-      const emailSession = cookieStore.get('email-session');
-      if (emailSession?.value && emailSession.value.includes('@')) {
+    // Always check email-session cookie as fallback
+    const emailSession = cookieStore.get('email-session');
+    console.log('Email session cookie:', emailSession);
+    
+    if (!userId && emailSession?.value) {
+      // Validate it looks like an email
+      if (emailSession.value.includes('@')) {
         userId = emailSession.value;
-        console.log('Using email-session cookie (Safari fallback):', userId);
+        console.log('Using email-session cookie as userId:', userId);
+      } else {
+        console.log('Invalid email-session cookie value:', emailSession.value);
       }
     }
     
     if (!userId) {
-      console.error('No user ID or email in session');
+      console.error('No valid user ID found in session or cookies');
+      console.error('Session was:', session);
+      console.error('Cookies were:', allCookies.map(c => c.name));
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
