@@ -18,8 +18,15 @@ export default function WaitlistStatus({ user }: WaitlistStatusProps) {
   const [isOnWaitlist, setIsOnWaitlist] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isJoining, setIsJoining] = useState(false);
+  const [isSafari, setIsSafari] = useState(false);
 
   useEffect(() => {
+    // Detect Safari browser
+    const userAgent = window.navigator.userAgent;
+    const isSafariBrowser = /^((?!chrome|android).)*safari/i.test(userAgent);
+    setIsSafari(isSafariBrowser);
+    console.log('Browser detection - Safari:', isSafariBrowser);
+    
     checkWaitlistStatus();
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -27,15 +34,39 @@ export default function WaitlistStatus({ user }: WaitlistStatusProps) {
     console.log('User in checkWaitlistStatus:', user);
     console.log('User email:', user?.email);
     
-    if (!user?.email) {
-      console.log('No user email, stopping waitlist check');
+    // For Safari: First verify we have a valid session
+    try {
+      console.log('Checking session first...');
+      const sessionCheck = await fetch('/api/auth/check-session');
+      
+      if (!sessionCheck.ok) {
+        console.log('No valid session found');
+        setIsLoading(false);
+        return;
+      }
+      
+      const sessionData = await sessionCheck.json();
+      console.log('Session check result:', sessionData);
+      
+      if (!sessionData.authenticated) {
+        console.log('Not authenticated, stopping waitlist check');
+        setIsLoading(false);
+        return;
+      }
+    } catch (error) {
+      console.error('Session check failed:', error);
       setIsLoading(false);
       return;
     }
 
     try {
-      console.log('Making API request to /api/waitlist');
-      const response = await fetch('/api/waitlist');
+      // Use Safari-specific endpoint if needed
+      const endpoint = isSafari && user?.email 
+        ? `/api/waitlist/safari?email=${encodeURIComponent(user.email)}`
+        : '/api/waitlist';
+        
+      console.log('Making API request to:', endpoint);
+      const response = await fetch(endpoint);
       console.log('Waitlist API response status:', response.status);
       
       if (response.ok) {
@@ -60,11 +91,16 @@ export default function WaitlistStatus({ user }: WaitlistStatusProps) {
       setIsJoining(true);
       console.log('Attempting to join waitlist for:', user.email);
       
-      const response = await fetch('/api/waitlist', {
+      // Use Safari-specific endpoint if needed
+      const endpoint = isSafari ? '/api/waitlist/safari' : '/api/waitlist';
+      const body = isSafari ? JSON.stringify({ email: user.email }) : undefined;
+      
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: body,
       });
 
       const data = await response.json();
