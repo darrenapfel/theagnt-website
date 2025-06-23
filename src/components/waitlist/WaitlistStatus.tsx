@@ -58,6 +58,8 @@ export default function WaitlistStatus({ user }: WaitlistStatusProps) {
 
     try {
       setIsJoining(true);
+      console.log('Attempting to join waitlist for:', user.email);
+      
       const response = await fetch('/api/waitlist', {
         method: 'POST',
         headers: {
@@ -65,13 +67,19 @@ export default function WaitlistStatus({ user }: WaitlistStatusProps) {
         },
       });
 
+      const data = await response.json();
+      console.log('Join waitlist response:', response.status, data);
+
       if (response.ok) {
         setIsOnWaitlist(true);
       } else {
-        console.error('Failed to join waitlist');
+        console.error('Failed to join waitlist:', data.error);
+        // You could show an error message here
+        alert(data.error || 'Failed to join waitlist');
       }
     } catch (error) {
       console.error('Error joining waitlist:', error);
+      alert('Network error. Please try again.');
     } finally {
       setIsJoining(false);
     }
@@ -117,10 +125,13 @@ export default function WaitlistStatus({ user }: WaitlistStatusProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-center"
+            className="text-center space-y-2"
           >
             <p className="text-electric-mint text-lg font-medium">
-              You&apos;re on the waitlist.
+              You&apos;re on the waitlist!
+            </p>
+            <p className="text-foreground/60 text-base">
+              We&apos;ll be in touch!
             </p>
           </motion.div>
         )}

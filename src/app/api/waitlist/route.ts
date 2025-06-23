@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth-server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET() {
   try {
@@ -12,14 +12,16 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    console.log('Checking waitlist for user:', session.user.id);
+    
+    const { data, error } = await supabaseAdmin
       .from('waitlist')
       .select('*')
       .eq('user_id', session.user.id)
       .single();
 
     if (error && error.code !== 'PGRST116') {
-      console.error('Supabase error:', error);
+      console.error('Supabase GET error:', error);
       return NextResponse.json({ error: 'Database error' }, { status: 500 });
     }
 
@@ -45,13 +47,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    console.log('Adding user to waitlist:', session.user.id);
+    
+    const { data, error } = await supabaseAdmin
       .from('waitlist')
       .insert({
         user_id: session.user.id,
         metadata: {
           joined_from: 'dashboard',
           user_agent: request.headers.get('user-agent'),
+          email: session.user.email,
+          name: session.user.name,
         },
       })
       .select()
